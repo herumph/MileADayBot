@@ -42,6 +42,8 @@ allowed_users = get_array('allowed_users')
 for comment in subreddit_comments:
 	#Flair add requests.
 	if(comment.body.lower().count("mileadaybot streak") and comment.id not in already_done and str(comment.author) not in edited_users):
+		already_done.append(comment.id)
+		write_out("already_done",already_done)
 		text = comment.body
 		call_index = [n for n in range(len(text)) if text.find("mileadaybot streak",n) == n]
 		text = text[call_index[0]:]
@@ -50,8 +52,6 @@ for comment in subreddit_comments:
 		streak = re.search('\d+', text[2]).group()
 		author = str(comment.author)
 		subreddit.set_flair(author,flair_text=streak)
-		already_done.append(comment.id)
-		write_out('already_done',already_done)
 		#Getting rid of user in streak_list.txt if they already had a streak.
 		if(streak_list.count(author)):
 			author_index = streak_list.index(author)
@@ -75,14 +75,14 @@ for comment in subreddit_comments:
 
 	#Allowed user editing flair.
 	if(str(comment.author) in allowed_users and comment.id not in already_done and comment.body.lower().count("!flair")):
+		already_done.append(comment.id)
+		write_out("already_done",already_done)
 		text = comment.body
 		call_index = [n for n in range(len(text)) if text.find("!flair",n) == n]
 		text = text[call_index[0]:]
 		text = text.rsplit()
 		author,streak = text[1],text[2]
 		subreddit.set_flair(author,flair_text = streak)
-		already_done.append(comment.id)
-		write_out('already_done',already_done)
 		if(streak_list.count(author)):
 			author_index = streak_list.index(author)
 			del streak_list[author_index]
@@ -99,6 +99,8 @@ for comment in subreddit_comments:
 
 	#Allowed user clearing flair.
 	if(str(comment.author) in allowed_users and comment.id not in already_done and comment.body.lower().count("!remove")):
+		already_done.append(comment.id)
+		write_out("already_done",already_done)
 		text = comment.body
 		call_index = [n for n in range(len(text)) if text.find("!remove",n) == n]
 		text = text[call_index[0]:]
@@ -108,8 +110,6 @@ for comment in subreddit_comments:
 		author_index = streak_list.index(text[1])
 		del streak_list[author_index]
 		del streak_list[author_index]
-		already_done.append(comment.id)
-		write_out('already_done',already_done)
 		write_out('streak_list', streak_list)
 		if(text[1] in edited_users):
 			edited_users.remove(text[1])
