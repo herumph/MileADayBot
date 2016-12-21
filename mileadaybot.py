@@ -116,6 +116,18 @@ for comment in subreddit_comments:
 			write_out('edited_users',edited_users)
 		comment.reply("User's flair has been removed.")
 
+	if(str(comment.author) in allowed_users and comment.id not in already_done and comment.body.lower().count("!rumphybot increment")):
+		temp_list=[]
+		already_done.append(comment.id)
+		write_out("already_done",already_done)
+		for i in range(0,len(streak_list)-1,2):
+			temp_list.append(streak_list[i])
+			temp_list.append(int(streak_list[i+1])+1)
+			subreddit.set_flair(temp_list[i],flair_text=temp_list[i+1])
+		streak_list=temp_list
+		write_out('streak_list',streak_list)
+		comment.reply("All flairs updated!")
+
 #Incrementing all streaks at 3AM.
 if(time[11:-10] == "03:00"):
 	temp_list=[]
