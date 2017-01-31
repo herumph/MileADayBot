@@ -6,6 +6,7 @@
 import praw
 import re
 from datetime import datetime
+from datetime import timedelta
 from sys import exit
 from config_bot import *
 
@@ -16,7 +17,7 @@ r.login(REDDIT_USERNAME,REDDIT_PASS)
 subreddit = r.get_subreddit("RumphyBot")
 subreddit_comments = subreddit.get_comments()
 
-time=str(datetime.now())
+#print(datetime.now() - timedelta(days=1))
 print('\n * * * * * * * * * * * * * * * * * * * * * * * * * * * \n')
 
 #Function to assign flair tag.
@@ -86,6 +87,11 @@ streak_list = get_array('streak_list')
 edited_users = get_array('edited_users')
 already_done = get_array('already_done')
 allowed_users = get_array('allowed_users')
+
+#Time stuff
+time=datetime.now()
+timearr = get_array("last_updated")
+update = datetime.strptime(timearr[0], "%Y-%m-%d %H:%M:%S")
 
 #Looking through comments.
 for comment in subreddit_comments:
@@ -178,13 +184,15 @@ for comment in subreddit_comments:
 		write_out('streak_list',streak_list)
 		comment.reply("All flairs updated!")
 
-#Incrementing all streaks at 3AM.
-if(time[11:-10] == "03:00"):
+#Incrementing all streaks at 3AM. 
+if(time > (update + timedelta(days=1))):
 	temp_list=[]
+	timearr[0] = update + timedelta(days=1)
 	for i in range(0,len(streak_list)-1,2):
 		temp_list.append(streak_list[i])
 		temp_list.append(int(streak_list[i+1])+1)
 		tag = flair_tag(temp_list[i+1])
-		subreddit.set_flair(temp_list[i],flair_text=temp_list[i+1]+' days, '+tag)
+		subreddit.set_flair(temp_list[i],flair_text=str(temp_list[i+1])+' days, '+tag)
 	streak_list=temp_list
 	write_out('streak_list',streak_list)
+	write_out('last_updated',timearr)
