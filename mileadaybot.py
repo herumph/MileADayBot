@@ -11,7 +11,7 @@ from sys import exit
 from config_bot import *
 
 #Getting reddit information.
-r = praw.Reddit("mileadaybot 1.1 by herumph")
+r = praw.Reddit("mileadaybot 2.0 by herumph")
 r.login(REDDIT_USERNAME,REDDIT_PASS)
 subreddit = r.get_subreddit("amileaday")
 #subreddit = r.get_subreddit("RumphyBot")
